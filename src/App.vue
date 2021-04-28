@@ -30,6 +30,8 @@ export default {
 
   methods: {
     fixLink(){
+      // MIT - Copyright (c) 2010-Present Jon Parise <jon@indelible.org>
+      // https://github.com/jparise/chrome-utm-stripper/
       const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_', 'i');
       const replacePattern = new RegExp(
           '([?&]' +
@@ -45,6 +47,9 @@ export default {
           stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
         }
         this.fixed_link = stripped
+      }
+      else {
+        this.fixed_link = url
       }
     },
     copyText() {
