@@ -14,10 +14,10 @@ git push dokku main
 
 ### Compiles and hot-reloads for development
 ```
-./make.sh serve
+yarn serve
 ```
 
-### Compiles and minifies for production
+### Compiles and minifies for production, in container
 ```
 ./make.sh build
 ```
