@@ -1,28 +1,56 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-main>
+      <v-card>
+        <v-card-text>
+          <v-text-field label="URL" v-model="link"></v-text-field>
+          <v-text-field label="Fixed" v-model="fixed_link" disabled></v-text-field>
+          <v-btn raised :href="fixed_link">Open</v-btn>
+        </v-card-text>
+      </v-card>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+
+  data: () => ({
+    link: null,
+    fixed_link: null,
+  }),
+
+  watch: {
+    link() {
+      this.fixLink()
+    }
+  },
+
+  methods: {
+    goLink(){
+      this.fixLink()
+
+    },
+    fixLink(){
+      const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_', 'i');
+      const replacePattern = new RegExp(
+          '([?&]' +
+          '(icid|mkt_tok|(g|fb)clid|igshid|_hs(enc|mi)|linkid|mc_[ce]id|(utm|stm)_(source|medium|term|campaign|content|cid|reader|referrer|name|social|social-type)|rb_clickid|yclid|_openstat|wickedid|otc|oly_(anon|enc)_id|soc_(src|trk))' +
+          '=[^&#]*)',
+          'ig')
+
+      const url = this.link
+      const queryStringIndex = url.indexOf('?')
+      if (url.search(searchPattern) > queryStringIndex) {
+        let stripped = url.replace(replacePattern, '')
+        if (stripped.charAt(queryStringIndex) === '&') {
+          stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
+        }
+        this.fixed_link = stripped
+      }
+    }
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
