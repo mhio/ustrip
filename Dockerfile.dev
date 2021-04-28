@@ -1,0 +1,12 @@
+FROM docker.io/node:14.16.0-slim AS build
+
+WORKDIR /app/
+
+COPY package.json yarn.lock /app/
+RUN set -uex; \
+    yarn install;
+
+COPY . /app/
+
+EXPOSE 3091
+CMD [ "/app/node_modules/.bin/vue-cli-service", "serve", "--port=3091", "--https" ]
