@@ -5,7 +5,8 @@
         <v-card-text>
           <v-text-field label="URL" v-model="link"></v-text-field>
           <v-text-field label="Fixed" v-model="fixed_link" disabled></v-text-field>
-          <v-btn raised :href="fixed_link">Open</v-btn>
+          <v-btn raised :href="fixed_link" target="_blank" class="mr-1">Open</v-btn>
+          <v-btn raised @click="copyText" class="ml-1">Copy</v-btn>
         </v-card-text>
       </v-card>
     </v-main>
@@ -28,10 +29,6 @@ export default {
   },
 
   methods: {
-    goLink(){
-      this.fixLink()
-
-    },
     fixLink(){
       const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_', 'i');
       const replacePattern = new RegExp(
@@ -49,8 +46,10 @@ export default {
         }
         this.fixed_link = stripped
       }
+    },
+    copyText() {
+      navigator.clipboard.writeText(this.fixed_link);
     }
   }
 };
 </script>
-
