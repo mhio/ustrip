@@ -1,5 +1,10 @@
 # ustrip
 
+Strip utm tracking tokens from a url to open or copy
+
+https://mhio.github.com/ustrip
+
+
 ## Project setup
 ```
 # Add letsencrypt plugin if not installed
