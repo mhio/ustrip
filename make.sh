@@ -30,6 +30,18 @@ run:docker () {
   #docker inspect "${CONTAINER_NAME}" | jq -r '.[0].NetworkSettings.IPAddress'
 }
 
+run:pages () {
+  BUILD_ENV=pages yarn build
+  current_commit=$(git show --oneline -s)
+  cd dist
+  git init
+  git add -A
+  git config --local user.name "mhio"
+  git config --local user.email "37205532+mhio@users.noreply.github.com"
+  git commit -m "deploy static build from $current_commit"
+  git push -f https://github.com/mhio/ustrip.git main:gh-pages
+} 
+
 # Common run:
 
 run:help(){
