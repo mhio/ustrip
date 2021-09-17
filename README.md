@@ -2,7 +2,7 @@
 
 Strip utm tracking tokens from a url to open or copy
 
-https://mhio.github.com/ustrip
+https://mhio.github.io/ustrip
 
 
 ## Project setup
