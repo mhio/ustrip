@@ -24,12 +24,23 @@ export default {
 
   watch: {
     link() {
-      this.fixLink()
+      this.vueFixLink()
+    }
+  },
+
+  mounted(){
+    const fixed = this.fixLink(window.location.href)
+    if (fixed !== window.location.href) {
+      console.log('fixing myself', fixed)
+      window.location.href = fixed
     }
   },
 
   methods: {
-    fixLink(){
+    vueFixLink(){
+      return this.fixed_link = this.fixLink(this.link)
+    },
+    fixLink(url){
       // MIT - Copyright (c) 2010-Present Jon Parise <jon@indelible.org>
       // https://github.com/jparise/chrome-utm-stripper/
       const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_', 'i');
@@ -39,17 +50,16 @@ export default {
           '=[^&#]*)',
           'ig')
 
-      const url = this.link
       const queryStringIndex = url.indexOf('?')
       if (url.search(searchPattern) > queryStringIndex) {
         let stripped = url.replace(replacePattern, '')
         if (stripped.charAt(queryStringIndex) === '&') {
           stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
         }
-        this.fixed_link = stripped
+        return stripped
       }
       else {
-        this.fixed_link = url
+        return url
       }
     },
     copyText() {
