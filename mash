@@ -29,7 +29,9 @@ run:docker () {
    --name "${CONTAINER_NAME}" \
    "${IMAGE_REPO}:${IMAGE_TAG}" \
    "$@"
-  #docker inspect "${CONTAINER_NAME}" | jq -r '.[0].NetworkSettings.IPAddress'
+}
+run:docker:getip(){
+  docker inspect "${CONTAINER_NAME}" | jq -r '.[0].NetworkSettings.IPAddress'
 }
 
 run:pages () {
