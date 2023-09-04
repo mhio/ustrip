@@ -3,10 +3,14 @@
     <v-main>
       <v-card elevation="0" class="ma-0">
         <v-card-text>
+          <p class="mb-4">Remove <code>utm_</code> like tracking query paramaters from a URL</p>
           <v-text-field density="compact" label="URL" v-model="link"></v-text-field>
           <v-text-field density="compact" label="Fixed" v-model="fixed_link"></v-text-field>
-          <v-btn raised :href="fixed_link" target="_blank" class="mr-2">Open</v-btn>
-          <v-btn raised @click="copyText" class="ml-2">Copy</v-btn>
+          <div class="d-flex mb-4">
+            <v-btn raised :href="fixed_link" target="_blank" class="mr-2">Open</v-btn>
+            <v-btn raised @click="copyText" class="ml-2">Copy</v-btn>
+          </div>
+          <p><b>Open</b> the fixed URL in a new window or <b>Copy</b> the fixed value to the clipboard</p>
         </v-card-text>
       </v-card>
     </v-main>
