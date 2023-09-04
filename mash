@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-set -ue
+set -ueo pipefail
+dateTime(){ date -u '+%Y-%m-%dT%H:%M:%SZ'; }
+runpwd=$(pwd -P)
 rundir=$(cd -P -- "$(dirname -- "$0")" && printf '%s\n' "$(pwd -P)")
 cd "$rundir"
+# {make.sh user} v1.0.0
 
-# Custom run:
 
 CONTAINER_NAME="ustrip"
 IMAGE_NAME="${CONTAINER_NAME}"
@@ -31,33 +33,31 @@ run:docker () {
 }
 
 run:pages () {
-  BUILD_ENV=pages yarn build
+  yarn build --base=/ustrip/
   current_commit=$(git show --oneline -s)
   cd dist
   git init
   git add -A
   git config --local user.name "mhio"
   git config --local user.email "37205532+mhio@users.noreply.github.com"
-  git commit -m "deploy static build from $current_commit"
+  git commit -m "deploy static build from $current_commit" .
   git push -f https://github.com/mhio/ustrip.git main:gh-pages
 } 
 
-# Common run:
 
+# {make.sh common} v1.0.0
+run:completion:words(){
+  declare -F | while read -r line; do
+    [ "${line:11:4}" = "run:" ] && [ "${line:11:15}" != "run:completion:" ] && echo "${line:15}"
+  done
+}
 run:help(){
   set +x
   echo "Commands:"
-  declare -F | awk '/^declare -f run:/ { printf("  %s\n", substr($0,16)); }'
+  run:completion:words | while read -r line; do printf "  %s\n" "${line}"; done
+  exit 1
 }
-
-if [ -n "${1:-}" ]; then
-  cmd=$1
-  shift
-else
-  cmd=help
-fi
-
-set -x
-
-run:$cmd "$@"
+[ -z "${1:-}" ] && run:help
+[ "${1:11}" = "completion:" ] || set -x
+run:"${1}" "${@:2}"
 

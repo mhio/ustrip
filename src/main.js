@@ -1,10 +1,24 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import { createVuetify } from 'vuetify'
+import { mdi } from 'vuetify/iconsets/mdi-svg'
+import "@fontsource/roboto/400.css"
+//import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles'
+
 import App from './App.vue'
-import vuetify from './plugins/vuetify'
 
-Vue.config.productionTip = false
+const vuetify = createVuetify({
+  icons: {
+    defaultSet: 'mdi',
+    sets: {
+      mdi,
+    },
+  }
+})
 
-new Vue({
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+export {}  // Important! See note.
+
+createApp(App)
+  .use(vuetify)
+  .mount('#app')
+
