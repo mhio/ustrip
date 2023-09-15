@@ -14,6 +14,9 @@
         </v-card-text>
       </v-card>
     </v-main>
+    <v-footer height="22" class="bg-grey-lighten-3 flex-shrink-1 flex-grow-0 text-caption">
+      <a class="text-decoration-none text-medium-emphasis" href="https://github.com/mhio/ustrip">mhio/ustrip<span class="mr-1">#{{ git_commit }}</span></a>
+    </v-footer>
   </v-app>
 </template>
 
@@ -21,6 +24,8 @@
 import { ref, watch, onMounted } from 'vue'
 const link = ref(null)
 const fixed_link = ref(null)
+
+const git_commit = __GIT_COMMIT__
 
 watch(link, () => {
   vueFixLink()

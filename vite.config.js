@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
-export default defineConfig({
+import { execSync } from 'node:child_process'
+
+const commit_hash_short = execSync('git rev-parse --short HEAD').toString().trim()
+console.log(`running on commit #${commit_hash_short}`)
+export default ({mode}) => defineConfig({
+  define: {
+    __GIT_COMMIT__: (mode === 'production') ? commit_hash_short : JSON.stringify(commit_hash_short),
+  },
   build: {
     target: 'es2017',
     rollupOptions: {
