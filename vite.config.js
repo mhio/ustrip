@@ -10,7 +10,7 @@ export default ({mode}) => defineConfig({
     __GIT_COMMIT__: JSON.stringify(commit_hash_short),
   },
   build: {
-    target: 'es2017',
+    target: 'es2015',
     rollupOptions: {
       output: {
         manualChunks: (id) => {
