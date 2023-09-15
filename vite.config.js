@@ -7,7 +7,7 @@ const commit_hash_short = execSync('git rev-parse --short HEAD').toString().trim
 console.log(`running on commit #${commit_hash_short}`)
 export default ({mode}) => defineConfig({
   define: {
-    __GIT_COMMIT__: (mode === 'production') ? commit_hash_short : JSON.stringify(commit_hash_short),
+    __GIT_COMMIT__: JSON.stringify(commit_hash_short),
   },
   build: {
     target: 'es2017',
