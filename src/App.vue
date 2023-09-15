@@ -19,7 +19,6 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { VApp, VMain, VCard, VCardText, VTextField, VBtn } from 'vuetify/components'
 const link = ref(null)
 const fixed_link = ref(null)
 
