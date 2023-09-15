@@ -13,39 +13,183 @@ const replacePattern = new RegExp(
   'ig'
 )
 
-export function fixLink(url){
-  // MIT - Copyright (c) 2010-Present Jon Parise <jon@indelible.org>
+export function fixLink(url:string){
+  // This function the two regular expressions were sourced from 
   // https://github.com/jparise/chrome-utm-stripper/
-
-
+  // MIT - Copyright (c) 2022 Jon Parise <jon@indelible.org>
   const queryStringIndex = url.indexOf('?')
-  if (url.search(searchPattern) > queryStringIndex) {
-    let stripped = url.replace(replacePattern, '')
-    if (stripped.charAt(queryStringIndex) === '&') {
-      stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
-    }
-    return stripped
-  }
-  else {
+  if (queryStringIndex < 0 || url.search(searchPattern) < queryStringIndex) {
     return url
+  }
+  let stripped = url.replace(replacePattern, '')
+  if (stripped.charAt(queryStringIndex) === '&') {
+    stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
+  }
+  return stripped
+}
+
+/**
+ * Check if a string has a url delimiter, when it's not a url. 
+ * Maybe this should prepend a scheme so it can use `URL`
+ * @param url 
+ * @returns -1 for no match
+ */
+function firstSlashQueryOrHash(url:string): number {
+  const slash = url.indexOf('/')
+  const query = url.indexOf('?')
+  const hash = url.indexOf('#')
+  if (slash > -1 && hash > -1 && query > -1) return Math.min(slash, query, hash)
+  if (slash > -1 && query > -1) return Math.min(slash, query)
+  if (slash > -1 && hash > -1) return Math.min(slash, hash)
+  if (query > -1 && hash > -1) return Math.min(query, hash)
+  if (slash > -1) return slash
+  if (query > -1) return query
+  if (hash > -1) return hash
+  return -1
+}
+
+/**
+ * generic test for a set of host names. 
+ */ 
+export function isUrlForSite(url:string, sites:Set<string>): string|null {
+  if (!url) return null
+  if (sites.has(url)) return url
+  const host_part_index = firstSlashQueryOrHash(url)
+  const host_part = url.substring(0, host_part_index)
+  if (sites.has(host_part)) return host_part
+  // Then any url
+  try {
+    const parsed_url = new URL(url)
+    if (sites.has(parsed_url.hostname)) return parsed_url.hostname
+    return null
+  } catch (error:any) {
+    if (error instanceof TypeError) return null
+    throw error
   }
 }
 
 /**
- * Creates a link to an alternate service, if applicable
+ * Creates a link to an alternate twitter service, if applicable
  * @param url 
  * @returns 
  */
-export function alternateLink(url:string){
-  if (!url) return ''
-  const str_link = String(url)
+export function alternateLinkSite(url:string, new_host:string, sites:Set<string>){
+  let str_link = String(url)
+  const site = isUrlForSite(url, sites)
+  if (!site) return str_link
   if (
-    str_link.startsWith('https://x.com/') 
-    || str_link.startsWith('x.com/')
-    || str_link.startsWith('https://twitter.com/')
-    || str_link.startsWith('twitter.com/')
+    site === 'youtu.be'
+    && (new_host === 'www.youtube.com'||new_host ==='https://www.youtube.com')
   ){
-    return str_link.replace(/[a-z0-9-]+?\.com\//i, 'nitter.net/')
+    return alternateBuildYoutudotbeUrl(url)
   }
-  return str_link
+  if (urlStringHasScheme(str_link)) {
+    const str_url = new URL(str_link)
+    str_url.hostname = new_host
+    return String(str_url)
+  }
+  return str_link.replace(site, new_host)
+}
+
+/**
+ * Creates a mapped link from youtu.be/x to www.youtube.com/watch?v=x
+ * @param url 
+ * @returns 
+ */
+export function alternateBuildYoutudotbeUrl(url:string){
+  let str_link = url
+  if (!urlStringHasScheme(str_link)) {
+    str_link = `https://${str_link}`
+  }
+  const str_url = new URL(str_link)
+  str_url.hostname = 'www.youtube.com'
+  if (str_url.pathname === '/') return String(str_url)
+  // Generate the v search param for path
+  const new_search = new URLSearchParams()
+  new_search.set('v', str_url.pathname.replace(/^\//, ''))
+  for (const [k,v] of str_url.searchParams.entries()) {
+    new_search.append(k,v)
+  }
+  str_url.pathname = `/watch`
+  str_url.search = new_search.toString()
+  return String(str_url)
+}
+
+const twitters = new Set([
+  'x.com',
+  'www.x.com',
+  'twitter.com',
+  'www.twitter.com',
+  't.co',
+])
+export function isUrlTwitter(url:string): string|null {
+  return isUrlForSite(url, twitters)
+}
+export function twitterDomains(): string[] {
+  return Array.from(twitters)
+}
+
+/**
+ * Creates a link to an alternate twitter service, if applicable
+ * @param url 
+ * @returns 
+ */
+export function alternateLinkTwitter(url:string, new_host:string){
+  return alternateLinkSite(url, new_host, twitters)
+}
+
+const youtubes = new Set([
+  'youtube.com',
+  'www.youtube.com',
+  'youtu.be', // this one needs extra mapping. from / to /watch?v=id
+])
+export function isUrlYoutube(url:string): string|null {
+  return isUrlForSite(url, youtubes)
+}
+export function youtubeDomains(): string[] {
+  return Array.from(youtubes)
+}
+
+/**
+ * Creates a link to an alternate youtube service, if applicable
+ * @param url 
+ * @returns 
+ */
+export function alternateLinkYoutube(url:string, new_host:string){
+  return alternateLinkSite(url, new_host, youtubes)
+}
+
+const reddits = new Set([
+  'reddit.com',
+  'www.reddit.com',
+  'redd.it',
+])
+export function isUrlReddit(url:string): string|null {
+  return isUrlForSite(url, reddits)
+}
+export function redditDomains(): string[] {
+  return Array.from(reddits)
+}
+
+/**
+ * Creates a link to an alternate reddit service, if applicable
+ * @param url 
+ * @returns 
+ */
+export function alternateLinkReddit(url:string, new_host:string){
+  return alternateLinkSite(url, new_host, reddits)
+}
+
+export type TAlternateSiteNames = 'twitter'|'youtube'|'reddit'
+
+export function siteAlternates(url:string): TAlternateSiteNames|null 
+{
+  if (isUrlTwitter(url)) return 'twitter'
+  if (isUrlYoutube(url)) return 'youtube'
+  if (isUrlReddit(url)) return 'reddit'
+  return null
+}
+
+export function urlStringHasScheme(url:string): boolean {
+  return Boolean(/^[a-z]+:\/\//.exec(url))
 }

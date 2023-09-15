@@ -8,7 +8,7 @@ console.log(`running on commit #${commit_hash_short}`)
 if (!commit_hash_short) throw new Error('no commit hash could be found')
 export default ({mode}) => defineConfig({
   define: {
-    __GIT_COMMIT__: JSON.stringify(commit_hash_short),
+    __GIT_COMMIT__: (mode === 'production') ? JSON.stringify(commit_hash_short) : JSON.stringify('dev'),
   },
   build: {
     target: 'es2015',

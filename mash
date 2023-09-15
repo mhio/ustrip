@@ -22,6 +22,12 @@ run:build () {
   docker build --tag "${IMAGE_REPO}:${IMAGE_TAG}" .
 }
 
+run:icons(){
+  echo '// extract from @mdi/js/mdi.js' > src/icons.ts
+  grep -w -e mdiLightbulb -e mdiMenu -e mdiContentCopy -e mdiOpenInNew node_modules/@mdi/js/mdi.js >> src/icons.ts
+  cat src/icons.ts
+}
+
 run:docker () {
   docker run --tty \
    --env DEBUG=true \
