@@ -7,6 +7,7 @@ import 'vuetify/styles'
 
 import App from './App.vue'
 
+
 const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',
@@ -15,6 +16,7 @@ const vuetify = createVuetify({
     },
   }
 })
+
 
 export {}  // Important! See note.
 

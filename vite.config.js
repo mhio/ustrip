@@ -4,6 +4,13 @@ import vuetify from 'vite-plugin-vuetify'
 export default defineConfig({
   build: {
     target: 'es2017',
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) return 'vendor'
+        },
+      },
+    },
   },
   plugins: [
     vue(),

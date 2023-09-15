@@ -10,7 +10,7 @@
             <v-btn raised :href="fixed_link" target="_blank" class="mr-2">Open</v-btn>
             <v-btn raised @click="copyText" class="ml-2">Copy</v-btn>
           </div>
-          <p><b>Open</b> the fixed URL in a new window or <b>Copy</b> the fixed value to the clipboard</p>
+          <p><b>Open</b> the fixed URL in a new window or <b>Copy</b> fixed to the clipboard</p>
         </v-card-text>
       </v-card>
     </v-main>
@@ -19,6 +19,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { VApp, VMain, VCard, VCardText, VTextField, VBtn } from 'vuetify/components'
 const link = ref(null)
 const fixed_link = ref(null)
 
@@ -40,11 +41,15 @@ function vueFixLink(){
 function fixLink(url){
   // MIT - Copyright (c) 2010-Present Jon Parise <jon@indelible.org>
   // https://github.com/jparise/chrome-utm-stripper/
-  const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_|si', 'i');
+  const searchPattern = new RegExp('utm_|stm_|clid|_hs|icid|igshid|linkid|mc_|mkt_tok|yclid|_openstat|wicked|otc|oly_|rb_clickid|soc_|si|ref_', 'i');
   const replacePattern = new RegExp(
       '([?&]' +
-      '(icid|mkt_tok|(g|fb)clid|igshid|_hs(enc|mi)|linkid|mc_[ce]id|(utm|stm)_(source|medium|term|campaign|content|cid|reader|referrer|name|social|social-type)|rb_clickid|yclid|_openstat|wickedid|otc|oly_(anon|enc)_id|soc_(src|trk)|si)' +
-      '=[^&#]*)',
+      '('
+        +'icid|mkt_tok|(g|fb)clid|igshid|_hs(enc|mi)|linkid|mc_[ce]id|(utm|stm)_(source|medium|term|campaign|content|cid|reader|referrer|name|social|social-type)|rb_clickid|yclid|_openstat|wickedid|otc|oly_(anon|enc)_id|soc_(src|trk)'
+        +'|si' // youtube
+        +'|ref_(src|url)' // twitter
+      +')' 
+      +'=[^&#]*)',
       'ig')
 
   const queryStringIndex = url.indexOf('?')
