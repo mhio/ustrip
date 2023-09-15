@@ -5,6 +5,7 @@ import { execSync } from 'node:child_process'
 
 const commit_hash_short = execSync('git rev-parse --short HEAD').toString().trim()
 console.log(`running on commit #${commit_hash_short}`)
+if (!commit_hash_short) throw new Error('no commit hash could be found')
 export default ({mode}) => defineConfig({
   define: {
     __GIT_COMMIT__: JSON.stringify(commit_hash_short),
