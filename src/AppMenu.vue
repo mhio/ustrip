@@ -32,6 +32,12 @@
         />
       </v-list-item>
       <v-list-item>
+        <v-checkbox label="Enter key opens alternate link"
+          v-model="alt_default"
+          hide-details
+        />
+      </v-list-item>
+      <v-list-item>
         <v-btn @click="toggleTheme" elevation="0" block>
           <v-icon class="mr-2" aria-hidden="false" icon="$lightbulb"/>
           {{ toggle_theme_name }}
@@ -48,6 +54,7 @@ import {
   alt_reddit,
   alt_twitter,
   alt_youtube,
+  alt_default,
 } from './settings'
 
 const theme = useTheme()

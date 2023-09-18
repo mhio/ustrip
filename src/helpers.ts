@@ -84,9 +84,15 @@ export function alternateLinkSite(url:string, new_host:string, sites:Set<string>
     return alternateBuildYoutudotbeUrl(url)
   }
   if (urlStringHasScheme(str_link)) {
-    const str_url = new URL(str_link)
-    str_url.hostname = new_host
-    return String(str_url)
+    try {
+      const str_url = new URL(str_link)
+      str_url.hostname = new_host
+      return String(str_url)
+    }
+    catch (error){
+      if (error instanceof TypeError) return str_link.replace(site, new_host)
+      throw error
+    }
   }
   return str_link.replace(site, new_host)
 }
@@ -101,18 +107,24 @@ export function alternateBuildYoutudotbeUrl(url:string){
   if (!urlStringHasScheme(str_link)) {
     str_link = `https://${str_link}`
   }
-  const str_url = new URL(str_link)
-  str_url.hostname = 'www.youtube.com'
-  if (str_url.pathname === '/') return String(str_url)
-  // Generate the v search param for path
-  const new_search = new URLSearchParams()
-  new_search.set('v', str_url.pathname.replace(/^\//, ''))
-  for (const [k,v] of str_url.searchParams.entries()) {
-    new_search.append(k,v)
+  try {
+    const str_url = new URL(str_link)
+    str_url.hostname = 'www.youtube.com'
+    if (str_url.pathname === '/') return String(str_url)
+    // Generate the v search param for path
+    const new_search = new URLSearchParams()
+    new_search.set('v', str_url.pathname.replace(/^\//, ''))
+    for (const [k,v] of str_url.searchParams.entries()) {
+      new_search.append(k,v)
+    }
+    str_url.pathname = `/watch`
+    str_url.search = new_search.toString()
+    return String(str_url)
   }
-  str_url.pathname = `/watch`
-  str_url.search = new_search.toString()
-  return String(str_url)
+  catch (error){
+    if (error instanceof TypeError) return str_link.replace('youtu.be', 'www.youtube.com')
+    throw error
+  }
 }
 
 const twitters = new Set([

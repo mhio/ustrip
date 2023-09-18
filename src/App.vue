@@ -52,5 +52,8 @@ onMounted(() => {
 .font-70 {
   font-size: 0.7rem;
 }
+.font-80 {
+  font-size: 0.8rem;
+}
 </style>
 
