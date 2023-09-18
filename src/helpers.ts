@@ -73,28 +73,26 @@ export function isUrlForSite(url:string, sites:Set<string>): string|null {
  * @param url 
  * @returns 
  */
-export function alternateLinkSite(url:string, new_host:string, sites:Set<string>){
+export function alternateLinkSite(url:string, alt_site:string, sites:Set<string>){
   let str_link = String(url)
   const site = isUrlForSite(url, sites)
   if (!site) return str_link
-  if (
-    site === 'youtu.be'
-    && (new_host === 'www.youtube.com'||new_host ==='https://www.youtube.com')
-  ){
+  let alt_host = parseHostOrReturnOriginal(alt_site)
+  if (site === 'youtu.be' && alt_host === 'www.youtube.com'){
     return alternateBuildYoutudotbeUrl(url)
   }
   if (urlStringHasScheme(str_link)) {
     try {
       const str_url = new URL(str_link)
-      str_url.hostname = new_host
+      str_url.hostname = alt_host
       return String(str_url)
     }
     catch (error){
-      if (error instanceof TypeError) return str_link.replace(site, new_host)
+      if (error instanceof TypeError) return str_link.replace(site, alt_host)
       throw error
     }
   }
-  return str_link.replace(site, new_host)
+  return str_link.replace(site, alt_host)
 }
 
 /**
@@ -204,4 +202,16 @@ export function siteAlternates(url:string): TAlternateSiteNames|null
 
 export function urlStringHasScheme(url:string): boolean {
   return Boolean(/^[a-z]+:\/\//.exec(url))
+}
+
+export function parseHostOrReturnOriginal(site:string){
+  if (!urlStringHasScheme(site)) return site
+  try { 
+    const site_url = new URL(site)
+    return site_url.hostname
+  }
+  catch (error){
+    if (error instanceof TypeError) return site
+    throw error
+  }
 }

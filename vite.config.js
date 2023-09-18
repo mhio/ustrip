@@ -10,6 +10,10 @@ export default ({mode}) => defineConfig({
   define: {
     __GIT_COMMIT__: (mode === 'production') ? JSON.stringify(commit_hash_short) : JSON.stringify('dev'),
   },
+  server: {
+    // This allow browser debugging to match lines properly
+    hmr: (process.env.DEBUG) ? true : false
+  },
   build: {
     target: 'es2015',
     rollupOptions: {

@@ -1,6 +1,6 @@
 // sum.test.js
 import { expect, test } from 'vitest'
-import { alternateLinkTwitter, alternateLinkYoutube, isUrlTwitter, isUrlYoutube } from './helpers'
+import { alternateLinkTwitter, alternateLinkYoutube, isUrlTwitter, isUrlYoutube, siteAlternates } from './helpers'
 
 const twitter_true = new Map<string, string>([
   ['x.com', 'x.com'],
@@ -17,6 +17,7 @@ const twitter_true = new Map<string, string>([
   ['https://t.co', 't.co'],
   ['https://t.co/wa', 't.co'],
   ['wut://t.co', 't.co'],
+  ['https://twitter.com/username/status/1203072069466181251', 'twitter.com']
 ])
 
 for (const [ test_string, site ] of twitter_true.entries()) {
@@ -53,6 +54,15 @@ test(`replace twitter.com with alt`, () => {
 test(`replace twitter.com with alt`, () => {
   expect(alternateLinkTwitter('https://twitter.com?a', 'twit.example.org')).toEqual('https://twit.example.org/?a')
 })
+test(`replace twitter.com with alt`, () => {
+  expect(alternateLinkTwitter('https://twitter.com/username/status/1203072069466181251', 'twit.example.org'))
+    .toEqual('https://twit.example.org/username/status/1203072069466181251')
+})
+test(`replace twitter.com with alt`, () => {
+  expect(alternateLinkTwitter('https://twitter.com/username/status/1203072069466181251', 'https://twit.example.org'))
+    .toEqual('https://twit.example.org/username/status/1203072069466181251')
+})
+
 
 const youtube_true = new Map<string, string>([
   ['youtube.com', 'youtube.com'],
@@ -113,4 +123,9 @@ test(`replace www.youtube.com with alt`, () => {
 test(`replace www.youtube.com with alt`, () => {
   expect(alternateLinkYoutube('https://www.youtube.com/watch?v=ii', 'yt.example.org'))
     .toEqual('https://yt.example.org/watch?v=ii')
+})
+
+test(`url with a site alternate`, () => {
+  expect(siteAlternates('https://twitter.com/username/status/1203072069466181251'))
+    .toEqual('twitter')
 })
