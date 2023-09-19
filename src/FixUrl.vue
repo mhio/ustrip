@@ -2,6 +2,7 @@
   <!-- Enter URL -->
   <v-text-field density="compact" label="Add URL" v-model="link"
     @keyup.enter="openLinkNewWindow"
+    autofocus
   />
 
   <!-- Fixed -->
