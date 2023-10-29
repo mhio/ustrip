@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
 })
 
 const icon_class = computed(() => (props.icon) ? '' : 'mr-2')
-const button_density = computed(() => props.icon ? 'comfortable' : undefined)
+const button_density = computed(() => props.icon ? 'compact' : undefined)
 
 </script>
 
@@ -25,6 +25,8 @@ const button_density = computed(() => props.icon ? 'comfortable' : undefined)
     class="mr-1"
     :icon="icon"
     :density="button_density"
+    variant="text"
+    rounded="sm"
   >
     <v-icon aria-hidden="false" icon="$open-in-new" :class="icon_class"/>
     <span v-if="props.icon === false">Open</span>

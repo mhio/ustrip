@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 
 const copy_available = Boolean(navigator?.clipboard?.writeText)
 const icon_class = computed(() => (props.icon) ? '' : 'mr-2')
-const button_density = computed(() => props.icon ? 'comfortable' : undefined)
+const button_density = computed(() => props.icon ? 'compact' : undefined)
 
 const copied_text_notify = ref(false)
 
@@ -37,6 +37,8 @@ async function copyText() {
     :disabled="!text"
     class="ml-1"
     :density="button_density"
+    variant="text"
+    rounded="sm"
   >
     <v-tooltip
       v-model="copied_text_notify"

@@ -8,6 +8,7 @@
           </div>
           <AppMenu/>
         </v-card-title>
+        <!-- <v-card-text :class="view_card_classes"> -->
         <v-card-text>
           <FixUrl/>
         </v-card-text>
@@ -28,13 +29,18 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useSettings } from './settings'
+// import { useDisplay } from 'vuetify'
+
 import { fixLink } from './helpers'
 import AppMenu from './AppMenu.vue'
 import FixUrl from './FixUrl.vue'
+// import { computed } from 'vue'
 
 // Define in build
 const git_commit = __GIT_COMMIT__
+
+// const { xs } = useDisplay()
+// const view_card_classes = computed(() => (xs.value) ? 'pl-1 pr-1' : '')
 
 onMounted(() => {
   const fixed = fixLink(window.location.href)
@@ -42,7 +48,6 @@ onMounted(() => {
     console.log('fixing myself!', fixed)
     window.location.href = fixed
   }
-  
 })
 
 </script>

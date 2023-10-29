@@ -1,56 +1,65 @@
 <template>
   <!-- Enter URL -->
-  URL
-  <v-text-field density="compact" v-model="link"
+  
+  <v-text-field
+    v-model="link"
     @keyup.enter="openLinkNewWindow"
     autofocus
-    hide-details
-    class="mb-2"
-    variant="outlined"
+    label="URL"
+    variant="underlined"
+    density="compact"
+    class="mb-1 mt-2"
   />
 
   <!-- Fixed -->
-  Fixed URL<br>
+  <!-- <div class="mt-4">Fixed URL</div> -->
   <v-text-field
+    @click="ref_tf_fixed?.select()"
     ref="ref_tf_fixed"
     v-model="fixed_link"
     readonly
     hide-details
-    class="mb-2"
+    label="Fixed URL"
     :disabled="fixed_link_empty"
+    variant="underlined"
     density="compact"
-    @click="ref_tf_fixed?.select()"
+    class="mb-1 mt-2"
   >
     <template v-if="!xs" v-slot:append>
       <button-link-blank icon :text="fixed_link"/>
-      <copy-button icon :text="fixed_link"/>
+      <button-copy icon :text="fixed_link"/>
     </template> 
   </v-text-field>
-  <div class="d-flex d-sm-none mb-2 justify-right">
+  <div class="d-flex d-sm-none mt-1 mb-2">
+    <!-- <div class="flex-grow-1"></div> -->
     <button-link-blank :text="fixed_link"/>
-    <copy-button :text="fixed_link"/>
+    <button-copy :text="fixed_link"/>
   </div>
 
   <!-- Alternate -->
-  Alternate Instance<br>
+  <!-- <div class="mt-4">Alternate Instance</div> -->
   <v-text-field
+    @click="ref_tf_alt?.select()"
     ref="ref_tf_alt"
     v-model="alt_link"
     readonly
     hide-details
-    density="compact" 
-    class="mb-2"
+    label="Alternate Instance"
     :disabled="alt_link_empty"
-    @click="ref_tf_alt?.select()"
+    variant="underlined"
+    density="compact" 
+    class="mb-1"
+    :class="(xs) ? 'mt-4' : 'mt-8'"
   >
     <template v-if="!xs" v-slot:append>
       <button-link-blank icon :text="alt_link"/>
-      <copy-button icon :text="alt_link"/>
+      <button-copy icon :text="alt_link"/>
     </template> 
   </v-text-field>
-  <div class="d-flex d-sm-none mt-1 mb-2">
+  <div class="d-flex d-sm-none mt-1">
+    <!-- <div class="flex-grow-1"></div> -->
     <button-link-blank :text="alt_link"/>
-    <copy-button :text="alt_link"/>
+    <button-copy :text="alt_link"/>
   </div>
 
   <!-- help -->
@@ -74,7 +83,7 @@ import {
   alternateLinkYoutube,
 } from './helpers'
 import { useSettings } from './settings'
-import CopyButton from './CopyButton.vue'
+import ButtonCopy from './ButtonCopy.vue'
 import ButtonLinkBlank from './ButtonLinkBlank.vue'
 import { VTextField } from 'vuetify/lib/components/index.mjs'
 
