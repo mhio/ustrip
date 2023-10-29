@@ -12,7 +12,7 @@ export default ({mode}) => defineConfig({
   },
   server: {
     // This allow browser debugging to match lines properly
-    hmr: (process.env.DEBUG) ? true : false
+    hmr: (process.env.DEBUG) ? false : true
   },
   build: {
     target: 'es2015',
