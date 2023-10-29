@@ -33,7 +33,7 @@
       </v-list-item>
       <v-list-item>
         <v-checkbox label="Enter key opens alternate link"
-          v-model="alt_default"
+          v-model="alt_is_default"
           hide-details
         />
       </v-list-item>
@@ -50,19 +50,28 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useTheme } from 'vuetify'
-import {
+import { useSettings } from './settings'
+import { onBeforeMount } from 'vue'
+
+const {
   alt_reddit,
   alt_twitter,
   alt_youtube,
-  alt_default,
-} from './settings'
+  alt_is_default,
+  dark_theme,
+} = useSettings()
 
 const theme = useTheme()
 
 const toggle_theme_name = computed(() => theme.global.current.value.dark ? 'Light' : 'Dark')
 
+onBeforeMount(() => {
+  theme.global.name.value = (dark_theme.value) ? 'dark' : 'light'
+})
+
 function toggleTheme () {
-  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+  dark_theme.value = !dark_theme.value
+  theme.global.name.value = (dark_theme.value) ? 'dark' : 'light'
 }
 </script>
 

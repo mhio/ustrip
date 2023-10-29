@@ -8,6 +8,7 @@
     "dev": "vite dev"
   },
   "dependencies": {
+    "@vueuse/core": "^10.5.0",
     "vue": "~3.3.7",
     "vuetify": "~3.3.16"
   },

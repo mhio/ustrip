@@ -26,8 +26,9 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
+import { useSettings } from './settings'
 import { fixLink } from './helpers'
 import AppMenu from './AppMenu.vue'
 import FixUrl from './FixUrl.vue'
@@ -41,6 +42,7 @@ onMounted(() => {
     console.log('fixing myself!', fixed)
     window.location.href = fixed
   }
+  
 })
 
 </script>

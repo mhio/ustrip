@@ -1,111 +1,58 @@
 <template>
   <!-- Enter URL -->
-  <v-text-field density="compact" label="Add URL" v-model="link"
+  URL
+  <v-text-field density="compact" v-model="link"
     @keyup.enter="openLinkNewWindow"
     autofocus
     hide-details
     class="mb-2"
+    variant="outlined"
   />
 
   <!-- Fixed -->
-  <v-text-field density="compact" label="Fixed" v-model="fixed_link" hide-details class="mb-1">
+  Fixed URL<br>
+  <v-text-field
+    ref="ref_tf_fixed"
+    v-model="fixed_link"
+    readonly
+    hide-details
+    class="mb-2"
+    :disabled="fixed_link_empty"
+    density="compact"
+    @click="ref_tf_fixed?.select()"
+  >
     <template v-if="!xs" v-slot:append>
-      <v-btn :href="fixed_link" target="_blank" class="mr-1"
-        icon raised density="comfortable" 
-        :disabled="fixed_link_empty"
-      >
-        <v-icon aria-hidden="false" icon="$open-in-new"/>
-      </v-btn>
-      <v-btn id="fixed-link-btn-copy" raised @click="copyText" class="ml-1" icon density="comfortable"
-        :disabled="fixed_link_empty"
-      >
-        <v-tooltip
-          v-model="copied_text_fixed"
-          location="bottom"
-          activator="parent"
-          open-on-click
-          :open-on-hover="false"
-          close-delay="500"
-        >
-          <span>Copied Fixed URL</span>
-        </v-tooltip>
-        <v-icon aria-hidden="false" icon="$content-copy"/>
-      </v-btn>
-
+      <button-link-blank icon :text="fixed_link"/>
+      <copy-button icon :text="fixed_link"/>
     </template> 
   </v-text-field>
-  <div class="d-flex d-sm-none mb-2">
-  <v-btn :href="fixed_link" target="_blank" class="mr-1"
-    density="comfortable"
-    :disabled="fixed_link_empty"
-  >
-    <v-icon aria-hidden="false" icon="$open-in-new" class="mr-2"/>Open
-  </v-btn>
-  <v-btn id="fixed-link-btn-copy" raised @click="copyText" class="ml-1" density="comfortable"
-    :disabled="fixed_link_empty"
-  >
-    <v-tooltip
-      v-model="copied_text_fixed"
-      location="bottom"
-      activator="parent"
-      open-on-click
-      :open-on-hover="false"
-      close-delay="500"
-    >
-      <span>Copied Fixed URL</span>
-    </v-tooltip>
-    <v-icon aria-hidden="false" icon="$content-copy" class="mr-2"/>Copy
-  </v-btn>
+  <div class="d-flex d-sm-none mb-2 justify-right">
+    <button-link-blank :text="fixed_link"/>
+    <copy-button :text="fixed_link"/>
   </div>
 
-
   <!-- Alternate -->
-  <v-text-field density="compact" label="Alternate Instance" v-model="alt_link" hide-details>
+  Alternate Instance<br>
+  <v-text-field
+    ref="ref_tf_alt"
+    v-model="alt_link"
+    readonly
+    hide-details
+    density="compact" 
+    class="mb-2"
+    :disabled="alt_link_empty"
+    @click="ref_tf_alt?.select()"
+  >
     <template v-if="!xs" v-slot:append>
-      <v-btn raised :href="alt_link" target="_blank" class="mr-1" icon density="comfortable"
-        :disabled="alt_link_empty"
-      >
-        <v-icon aria-hidden="false" icon="$open-in-new"/>
-      </v-btn>
-      <v-btn raised @click="copyTextAlt" class="ml-1" icon density="comfortable"
-        :disabled="alt_link_empty"
-      >
-        <v-tooltip
-          v-model="copied_text_alt"
-          location="bottom"
-          activator="parent"
-          open-on-click
-          :open-on-hover="false"
-          close-delay="500"
-        >
-          <span>Copied Alternate URL</span>
-        </v-tooltip>
-        <v-icon aria-hidden="false" icon="$content-copy" :disable="true"/>
-      </v-btn>
+      <button-link-blank icon :text="alt_link"/>
+      <copy-button icon :text="alt_link"/>
     </template> 
   </v-text-field>
   <div class="d-flex d-sm-none mt-1 mb-2">
-    <v-btn raised :href="alt_link" target="_blank" class="mr-1" density="comfortable"
-      :disabled="alt_link_empty"
-    >
-      <v-icon aria-hidden="false" icon="$open-in-new" class="mr-2"/> Open
-    </v-btn>
-    <v-btn raised @click="copyTextAlt" class="ml-1" density="comfortable"
-      :disabled="alt_link_empty"
-    >
-      <v-tooltip
-        v-model="copied_text_alt"
-        location="bottom"
-        activator="parent"
-        open-on-click
-        :open-on-hover="false"
-        close-delay="500"
-      >
-        <span>Copied Alternate URL</span>
-      </v-tooltip>
-      <v-icon aria-hidden="false" icon="$content-copy" :disable="true" class="mr-2"/> Copy
-    </v-btn>
+    <button-link-blank :text="alt_link"/>
+    <copy-button :text="alt_link"/>
   </div>
+
   <!-- help -->
   <p v-if="!xs" class="mt-4 mb-4 text-medium-emphasis float-right font-80">
     <v-icon aria-hidden="false" class="mr-1" icon="$open-in-new"/>
@@ -118,6 +65,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
 import { useDisplay } from 'vuetify'
+
 import {
   fixLink,
   siteAlternates,
@@ -125,17 +73,25 @@ import {
   alternateLinkReddit,
   alternateLinkYoutube,
 } from './helpers'
-import {
-  alt_default,
+import { useSettings } from './settings'
+import CopyButton from './CopyButton.vue'
+import ButtonLinkBlank from './ButtonLinkBlank.vue'
+import { VTextField } from 'vuetify/lib/components/index.mjs'
+
+const {
+  alt_is_default,
   alt_reddit,
   alt_twitter,
   alt_youtube,
-} from './settings'
+} = useSettings()
+
 // The entered link
 const link = ref('')
 const fixed_link = ref('')
-const alt_link = computed(() => {
+const ref_tf_fixed = ref<VTextField|null>(null)
+const ref_tf_alt = ref<VTextField|null>(null)
   // detect type then inject the correct setting
+const alt_link = computed(() => {
   const site = siteAlternates(fixed_link.value)
   switch (site) {
     case 'twitter': return alternateLinkTwitter(fixed_link.value, alt_twitter.value)
@@ -147,9 +103,8 @@ const alt_link = computed(() => {
 })
 const fixed_link_empty = computed(() => (!fixed_link.value || fixed_link.value.length < 1))
 const alt_link_empty = computed(() => (!alt_link.value || alt_link.value.length < 1))
-const copied_text_fixed = ref(false)
-const copied_text_alt = ref(false)
 const { xs } = useDisplay()
+
 watch(link, () => {
   vueFixLink()
 })
@@ -157,22 +112,8 @@ watch(link, () => {
 function vueFixLink(){
   return fixed_link.value = fixLink(link.value)
 }
-async function copyText() {
-  if (!fixed_link.value) return
-  await navigator.clipboard.writeText(fixed_link.value)
-  //popup ok
-  copied_text_fixed.value = true
-  setTimeout(() => copied_text_fixed.value = false, 600)
-}
-async function copyTextAlt() {
-  if (!alt_link.value) return
-  await navigator.clipboard.writeText(alt_link.value)
-  //popup ok
-  copied_text_alt.value = true
-  setTimeout(() => copied_text_alt.value = false, 600)
-}
 function openLinkNewWindow(){
-  const url = (alt_default.value) ? alt_link.value : fixed_link.value
+  const url = (alt_is_default.value) ? alt_link.value : fixed_link.value
   window.open(url, '_blank')
 }
 </script>
