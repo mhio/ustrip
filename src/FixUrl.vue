@@ -78,10 +78,7 @@ import { useDisplay } from 'vuetify'
 
 import {
   fixLink,
-  siteAlternates,
-  alternateLinkTwitter, 
-  alternateLinkReddit,
-  alternateLinkYoutube,
+  siteAlternateLink,
 } from './helpers'
 import { useSettings } from './settings'
 import ButtonCopy from './ButtonCopy.vue'
@@ -102,14 +99,8 @@ const ref_tf_fixed = ref<VTextField|null>(null)
 const ref_tf_alt = ref<VTextField|null>(null)
   // detect type then inject the correct setting
 const alt_link = computed(() => {
-  const site = siteAlternates(fixed_link.value)
-  switch (site) {
-    case 'twitter': return alternateLinkTwitter(fixed_link.value, alt_twitter.value)
-    case 'youtube': return alternateLinkYoutube(fixed_link.value, alt_youtube.value)
-    case 'reddit':  return alternateLinkReddit(fixed_link.value, alt_reddit.value)
-    default:
-      return fixed_link.value
-  }
+  const url = siteAlternateLink(fixed_link.value, alt_twitter.value, alt_youtube.value, alt_reddit.value)
+  return url
 })
 const fixed_link_empty = computed(() => (!fixed_link.value || fixed_link.value.length < 1))
 const alt_link_empty = computed(() => (!alt_link.value || alt_link.value.length < 1))

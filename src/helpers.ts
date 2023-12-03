@@ -14,7 +14,7 @@ const replacePattern = new RegExp(
 )
 
 export function fixLink(url:string){
-  // This function the two regular expressions were sourced from 
+  // This function and the `searchPattern` and `replacePattern` regular expressions were originally sourced from 
   // https://github.com/jparise/chrome-utm-stripper/
   // MIT - Copyright (c) 2022 Jon Parise <jon@indelible.org>
   const queryStringIndex = url.indexOf('?')
@@ -23,7 +23,7 @@ export function fixLink(url:string){
   }
   let stripped = url.replace(replacePattern, '')
   if (stripped.charAt(queryStringIndex) === '&') {
-    stripped = `${stripped.substr(0, queryStringIndex)}?${stripped.substr(queryStringIndex + 1)}`;
+    stripped = `${stripped.substring(0, queryStringIndex)}?${stripped.substring(queryStringIndex + 1)}`;
   }
   return stripped
 }
@@ -192,12 +192,28 @@ export function alternateLinkReddit(url:string, new_host:string){
 
 export type TAlternateSiteNames = 'twitter'|'youtube'|'reddit'
 
-export function siteAlternates(url:string): TAlternateSiteNames|null 
+export function siteAlternates(
+  url:string
+) :TAlternateSiteNames|null 
 {
   if (isUrlTwitter(url)) return 'twitter'
   if (isUrlYoutube(url)) return 'youtube'
   if (isUrlReddit(url)) return 'reddit'
   return null
+}
+
+export function siteAlternateLink(
+  url:string, alt_twitter_host:string, alt_youtube_host:string, alt_reddit_host:string
+) :string
+{
+  const site = siteAlternates(url)
+  switch (site) {
+    case 'twitter': return alternateLinkTwitter(url, alt_twitter_host)
+    case 'youtube': return alternateLinkYoutube(url, alt_youtube_host)
+    case 'reddit':  return alternateLinkReddit(url, alt_reddit_host)
+    default:
+      return url
+  }
 }
 
 export function urlStringHasScheme(url:string): boolean {

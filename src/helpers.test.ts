@@ -1,6 +1,6 @@
 // sum.test.js
 import { expect, test } from 'vitest'
-import { alternateLinkTwitter, alternateLinkYoutube, isUrlTwitter, isUrlYoutube, siteAlternates } from './helpers'
+import { alternateLinkTwitter, alternateLinkYoutube, isUrlTwitter, isUrlYoutube, siteAlternateLink, siteAlternates } from './helpers'
 
 const twitter_true = new Map<string, string>([
   ['x.com', 'x.com'],
@@ -17,7 +17,7 @@ const twitter_true = new Map<string, string>([
   ['https://t.co', 't.co'],
   ['https://t.co/wa', 't.co'],
   ['wut://t.co', 't.co'],
-  ['https://twitter.com/username/status/1203072069466181251', 'twitter.com']
+  ['https://twitter.com/usrname/staus/120307466181251', 'twitter.com']
 ])
 
 for (const [ test_string, site ] of twitter_true.entries()) {
@@ -55,12 +55,12 @@ test(`replace twitter.com with alt`, () => {
   expect(alternateLinkTwitter('https://twitter.com?a', 'twit.example.org')).toEqual('https://twit.example.org/?a')
 })
 test(`replace twitter.com with alt`, () => {
-  expect(alternateLinkTwitter('https://twitter.com/username/status/1203072069466181251', 'twit.example.org'))
-    .toEqual('https://twit.example.org/username/status/1203072069466181251')
+  expect(alternateLinkTwitter('https://twitter.com/usrname/staus/120307466181251', 'twit.example.org'))
+    .toEqual('https://twit.example.org/usrname/staus/120307466181251')
 })
 test(`replace twitter.com with alt`, () => {
-  expect(alternateLinkTwitter('https://twitter.com/username/status/1203072069466181251', 'https://twit.example.org'))
-    .toEqual('https://twit.example.org/username/status/1203072069466181251')
+  expect(alternateLinkTwitter('https://twitter.com/usrname/staus/120307466181251', 'https://twit.example.org'))
+    .toEqual('https://twit.example.org/usrname/staus/120307466181251')
 })
 
 
@@ -125,7 +125,23 @@ test(`replace www.youtube.com with alt`, () => {
     .toEqual('https://yt.example.org/watch?v=ii')
 })
 
-test(`url with a site alternate`, () => {
-  expect(siteAlternates('https://twitter.com/username/status/1203072069466181251'))
+test(`site for a url with a site alternate`, () => {
+  expect(siteAlternates('https://twitter.com/usrname/staus/120307466181251'))
     .toEqual('twitter')
+})
+
+test(`url for a site alternate link - twitter`, () => {
+  expect(siteAlternateLink('https://twitter.com/usrname/staus/120307466181251', 'alt_tweet','',''))
+    .toEqual('https://alt_tweet/usrname/staus/120307466181251')
+})
+
+test(`url for a site alternate link - youtube`, () => {
+  expect(siteAlternateLink('https://youtube.com/watch/120307466181251', '','alt_yt',''))
+    .toEqual('https://alt_yt/watch/120307466181251')
+})
+
+
+test(`url for a site alternate link - reddit`, () => {
+  expect(siteAlternateLink('https://reddit.com/u/820307466181251', '','','alt_lr'))
+    .toEqual('https://alt_lr/u/820307466181251')
 })
