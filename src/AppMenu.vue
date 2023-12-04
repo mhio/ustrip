@@ -1,5 +1,5 @@
 <template>
-  <v-menu class="menu-text-field" :close-on-content-click="false">
+  <v-menu :close-on-content-click="false" class="menu-border">
     <template v-slot:activator="{ props }">
       <v-btn
         v-bind="props"
@@ -31,15 +31,17 @@
           hide-details
         />
       </v-list-item>
-      <v-list-item>
-        <v-checkbox label="Drop opens new window"
+      <v-list-item class="mt-2">
+        <v-checkbox label="Drop opens new popup window"
           v-model="drop_open"
+          density="compact"
           hide-details
         />
       </v-list-item>
       <v-list-item>
-        <v-checkbox label="Enter key opens alternate link"
+        <v-checkbox label="Drop/Enter opens alternate link"
           v-model="alt_is_default"
+          density="compact"
           hide-details
         />
       </v-list-item>
@@ -85,5 +87,9 @@ function toggleTheme () {
 <style scoped>
 .menu-text-field { 
   min-width: 22em;
+}
+.menu-border {
+  border: 1px;
+  border-color: #ccc;
 }
 </style>

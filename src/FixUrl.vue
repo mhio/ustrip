@@ -121,6 +121,8 @@ function dropLink(ev:DragEvent){
       item.getAsString((link_string)=>{
         link.value = link_string
         if (drop_open) {
+          // so disconnected now, popup warning
+          // nextTick(()=> openLinkNewWindow())
           openLinkNewWindow()
         }
       })
