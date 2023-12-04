@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ueo pipefail
 dateTime(){ date -u '+%Y-%m-%dT%H:%M:%SZ'; }
+dateTimeShort(){ date -u '+%Y%m%d-%H%M%SZ'; }
 runpwd=$(pwd -P)
 rundir=$(cd -P -- "$(dirname -- "$0")" && printf '%s\n' "$(pwd -P)")
 cd "$rundir"
@@ -41,16 +42,27 @@ run:docker:getip(){
 }
 
 run:pages () {
+  cd "$rundir"
+  rm -rvf dist/.git dist/assets dist/index.html
+  rmdir dist
   yarn build --base=/ustrip/
   current_commit=$(git show --oneline -s)
-  cd dist
-  git init
-  git add -A
-  git config --local user.name "mhio"
-  git config --local user.email "37205532+mhio@users.noreply.github.com"
-  git commit -m "deploy static build from $current_commit" .
-  git push -f https://github.com/mhio/ustrip.git main:gh-pages
+  current_user=$(git config user.name)
+  current_email=$(git config user.email)
+  cd "$rundir"/dist
+  g init
+  g add -A
+  g config --local user.name "${current_user}"
+  g config --local user.email "${current_email}"
+  g commit -m "deploy static build from $current_commit" .
+  g push -f https://github.com/mhio/ustrip.git main:gh-pages
+  cd "$rundir"
+  g tag v$(dateTimeShort)
+  g push --tags
 } 
+function g(){
+  TZ= git "$@"
+}
 
 
 # {make.sh common} v1.0.0
