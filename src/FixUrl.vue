@@ -1,6 +1,12 @@
 <template>
   <!-- Enter URL -->
-  <div @drop.prevent="dropLink" @dragenter.prevent @dragover.prevent>
+  <div
+    :class="hover_class"
+    @drop.prevent="dropLink"
+    @dragenter.prevent="dropHover"
+    @dragover.prevent="dropHover"
+    @dragleave.prevent="dropLeave"
+  >
     <v-text-field
       v-model="link"
       @keyup.enter="openLinkNewWindow"
@@ -72,6 +78,13 @@
   </div>
 </template>
 
+<style scoped>
+.drop-hover {
+  /* background: rbga(255,255,255,1); */
+  background: #29292f;
+}
+</style>
+
 <script setup lang="ts">
 import { ref, watch, computed, nextTick } from 'vue'
 import { useDisplay } from 'vuetify'
@@ -96,6 +109,7 @@ const {
 // The entered link
 const link = ref('')
 const fixed_link = ref('')
+const hover_class = ref('')
 const ref_tf_fixed = ref<VTextField|null>(null)
 const ref_tf_alt = ref<VTextField|null>(null)
   // detect type then inject the correct setting
@@ -111,7 +125,14 @@ watch(link, () => {
   vueFixLink()
 })
 
+function dropHover(){
+  hover_class.value = 'drop-hover'
+}
+function dropLeave(){
+  hover_class.value = ''
+}
 function dropLink(ev:DragEvent){
+  dropLeave()
   if (!ev.dataTransfer) return
   console.debug('dropped data', ev.dataTransfer.items)
   for (const item of ev.dataTransfer.items) {
@@ -139,3 +160,4 @@ function openLinkNewWindow(){
   window.open(url, '_blank', 'noreferrer')
 }
 </script>
+
