@@ -4,7 +4,7 @@
       <v-card elevation="0" class="ma-0">
         <v-card-title class="d-flex">
           <div class="flex-grow-1 mt-1">
-            Remove <code color="pink">utm_x</code> query parameters from a URL
+            Remove <code color="pink">tracking</code> parameters from a URL
           </div>
           <AppMenu/>
         </v-card-title>

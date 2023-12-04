@@ -32,6 +32,12 @@
         />
       </v-list-item>
       <v-list-item>
+        <v-checkbox label="Drop opens new window"
+          v-model="drop_open"
+          hide-details
+        />
+      </v-list-item>
+      <v-list-item>
         <v-checkbox label="Enter key opens alternate link"
           v-model="alt_is_default"
           hide-details
@@ -58,6 +64,7 @@ const {
   alt_twitter,
   alt_youtube,
   alt_is_default,
+  drop_open,
   dark_theme,
 } = useSettings()
 

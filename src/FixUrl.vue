@@ -90,6 +90,7 @@ const {
   alt_reddit,
   alt_twitter,
   alt_youtube,
+  drop_open,
 } = useSettings()
 
 // The entered link
@@ -119,6 +120,9 @@ function dropLink(ev:DragEvent){
     ) {
       item.getAsString((link_string)=>{
         link.value = link_string
+        if (drop_open) {
+          openLinkNewWindow()
+        }
       })
       return
     }
@@ -130,6 +134,6 @@ function vueFixLink(){
 }
 function openLinkNewWindow(){
   const url = (alt_is_default.value) ? alt_link.value : fixed_link.value
-  window.open(url, '_blank')
+  window.open(url, '_blank', 'noreferrer')
 }
 </script>

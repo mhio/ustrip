@@ -140,7 +140,6 @@ test(`url for a site alternate link - youtube`, () => {
     .toEqual('https://alt_yt/watch/120307466181251')
 })
 
-
 test(`url for a site alternate link - reddit`, () => {
   expect(siteAlternateLink('https://reddit.com/u/820307466181251', '','','alt_lr'))
     .toEqual('https://alt_lr/u/820307466181251')
