@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, nextTick } from 'vue'
 import { useDisplay } from 'vuetify'
 
 import {
@@ -122,8 +122,8 @@ function dropLink(ev:DragEvent){
         link.value = link_string
         if (drop_open) {
           // so disconnected now, popup warning
-          // nextTick(()=> openLinkNewWindow())
-          openLinkNewWindow()
+          nextTick(()=> openLinkNewWindow())
+          // openLinkNewWindow()
         }
       })
       return

@@ -170,6 +170,8 @@ export function alternateLinkYoutube(url:string, new_host:string){
 }
 
 const reddits = new Set([
+  'old.reddit.com',
+  'np.reddit.com',
   'reddit.com',
   'www.reddit.com',
   'redd.it',

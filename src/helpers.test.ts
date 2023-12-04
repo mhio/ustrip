@@ -144,3 +144,11 @@ test(`url for a site alternate link - reddit`, () => {
   expect(siteAlternateLink('https://reddit.com/u/820307466181251', '','','alt_lr'))
     .toEqual('https://alt_lr/u/820307466181251')
 })
+test(`url for a site alternate link - old/reddit`, () => {
+  expect(siteAlternateLink('https://old.reddit.com/u/820307466181251', '','','alt_lr'))
+    .toEqual('https://alt_lr/u/820307466181251')
+})
+test(`url for a site alternate link - np/reddit`, () => {
+  expect(siteAlternateLink('https://np.reddit.com/u/820307466181251', '','','alt_lr'))
+    .toEqual('https://alt_lr/u/820307466181251')
+})
