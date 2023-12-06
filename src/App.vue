@@ -2,11 +2,11 @@
   <v-app>
     <v-main>
       <v-card elevation="0" class="ma-0">
-        <v-card-title class="d-flex">
-          <div class="flex-grow-1 mt-1">
+        <v-card-title class="d-flex mr-0 pr-1">
+          <div class="flex-grow-1 mt-1 u-ellipses">
             Remove <code color="pink">tracking</code> parameters from a URL
           </div>
-          <AppMenu/>
+          <AppMenu class="flex-shrink-1" />
         </v-card-title>
         <!-- <v-card-text :class="view_card_classes"> -->
         <v-card-text>
@@ -56,6 +56,16 @@ onMounted(() => {
 @use 'vuetify' with (
   $color-pack: false,
 );
+.u-ellipses {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  text-overflow: ellipsis;
+  text-overflow: "…";
+  text-overflow: fade;
+  text-overflow: fade(10px);
+  text-overflow: fade(5%);
+}
 .font-70 {
   font-size: 0.7rem;
 }
