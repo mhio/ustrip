@@ -10,6 +10,7 @@
     <v-text-field
       v-model="link"
       @keyup.enter="openLinkNewWindow"
+      @focus="$event.target.select()"
       autofocus
       label="URL"
       variant="underlined"
@@ -21,6 +22,7 @@
     <!-- <div class="mt-4">Fixed URL</div> -->
     <v-text-field
       @click="ref_tf_fixed?.select()"
+      
       ref="ref_tf_fixed"
       v-model="fixed_link"
       readonly
